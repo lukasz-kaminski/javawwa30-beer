@@ -18,6 +18,8 @@ public class BeerService {
     }
 
     public Beer create(Beer beer) {
+        if(beerRepository.findBeerByName(beer.getName()).isPresent() )
+            throw new IllegalNameException();
         if(beer.getName().toLowerCase().contains(beer.getType().name().toLowerCase())) {
             throw new IllegalNameException();
         }
