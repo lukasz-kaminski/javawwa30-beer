@@ -3,6 +3,7 @@ package pl.sda.beer.service;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InOrder;
@@ -67,6 +68,18 @@ class BeerServiceTest {
     @ParameterizedTest
     @MethodSource("beerGenerator")
     void shouldCallRepo(Beer beer){
+        //given
+
+        //when
+        beerService.create(beer);
+
+        //then
+        verify(repository).save(beer);
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(BeerProvider.class)
+    void shouldCallRepoWithArgumentsSource(Beer beer){
         //given
 
         //when
