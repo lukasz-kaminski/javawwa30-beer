@@ -3,10 +3,7 @@ package pl.sda.beer.service;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ArgumentsSource;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.*;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -47,7 +44,7 @@ class BeerServiceTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"piwo1", "piwo2", "piwo3"})
-    void shouldCallRepo(String beerName){
+    void shouldCallRepo(String beerName) {
         //given
 
         //when
@@ -68,7 +65,7 @@ class BeerServiceTest {
 
     @ParameterizedTest
     @MethodSource("beerGenerator")
-    void shouldCallRepo(Beer beer){
+    void shouldCallRepo(Beer beer) {
         //given
 
         //when
@@ -80,9 +77,21 @@ class BeerServiceTest {
 
     @ParameterizedTest
     @ArgumentsSource(BeerProvider.class)
-    void shouldCallRepoWithArgumentsSource(Beer beer){
+    void shouldCallRepoWithArgumentsSource(Beer beer) {
         //given
 
+        //when
+        beerService.create(beer);
+
+        //then
+        verify(repository).save(beer);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"IPA, zywiec", "APA, Krol", "LAGER, wojak"})
+    void shouldCallRepoWithArgumentsSource(String typ, String name) {
+        //given
+        Beer beer = new Beer(BeerType.valueOf(typ), name);
         //when
         beerService.create(beer);
 
@@ -116,12 +125,10 @@ class BeerServiceTest {
         //when
         beerService.create(new Beer(BeerType.IPA, "BRO"));
         //then
-        InOrder inOrder= Mockito.inOrder(repository);
+        InOrder inOrder = Mockito.inOrder(repository);
         inOrder.verify(repository).findBeerByName("BRO");
         inOrder.verify(repository).save(new Beer(BeerType.IPA, "BRO"));
     }
-
-
 
 
 }
