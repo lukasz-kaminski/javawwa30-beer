@@ -2,6 +2,8 @@ package pl.sda.beer.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -12,9 +14,10 @@ import pl.sda.beer.domain.Beer;
 import pl.sda.beer.domain.Type;
 import pl.sda.beer.repository.BeerRepository;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class BeerServiceTest {
@@ -37,16 +40,16 @@ class BeerServiceTest {
         assertNotNull(piwo.getId());
     }
 
-    @Test
-    void shouldCallRepo(){
+    @ParameterizedTest
+    @ValueSource(strings = {"piwo1", "piwo2", "piwo3"})
+    void shouldCallRepo(String beerName){
         //given
 
         //when
-        beerService.create(new Beer(Type.IPA, "piwo"));
+        beerService.create(new Beer(Type.IPA, beerName));
 
         //then
-        verify(repository).save(any());
-        verifyNoMoreInteractions(repository);
+        verify(repository).save(new Beer(Type.IPA, beerName));
     }
 
     @Test
