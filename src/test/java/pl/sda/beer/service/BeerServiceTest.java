@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InOrder;
@@ -13,7 +14,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.sda.beer.IllegalNameException;
 import pl.sda.beer.domain.Beer;
-import pl.sda.beer.domain.Type;
+import pl.sda.beer.domain.BeerType;
 import pl.sda.beer.repository.BeerRepository;
 
 import java.util.stream.Stream;
@@ -35,11 +36,11 @@ class BeerServiceTest {
     @Test
     void should() {
         //given
-        Beer testBeer = new Beer(Type.IPA, "piwo");
-        when(repository.save(testBeer)).thenReturn(new Beer(1L, Type.IPA, "piwo"));
+        Beer testBeer = new Beer(BeerType.IPA, "piwo");
+        when(repository.save(testBeer)).thenReturn(new Beer(1L, BeerType.IPA, "piwo"));
 
         //when
-        Beer piwo = beerService.create(new Beer(Type.IPA, "piwo"));
+        Beer piwo = beerService.create(new Beer(BeerType.IPA, "piwo"));
         //then
         assertNotNull(piwo.getId());
     }
@@ -50,18 +51,18 @@ class BeerServiceTest {
         //given
 
         //when
-        beerService.create(new Beer(Type.IPA, beerName));
+        beerService.create(new Beer(BeerType.IPA, beerName));
 
         //then
-        verify(repository).save(new Beer(Type.IPA, beerName));
+        verify(repository).save(new Beer(BeerType.IPA, beerName));
     }
 
     static Stream<Beer> beerGenerator() {
         return Stream.of(
-                new Beer(Type.IPA, "piwo1"),
-                new Beer(Type.IPA, "piwo2"),
-                new Beer(Type.IPA, "piwo3"),
-                new Beer(Type.IPA, "piwo4")
+                new Beer(BeerType.IPA, "piwo1"),
+                new Beer(BeerType.IPA, "piwo2"),
+                new Beer(BeerType.IPA, "piwo3"),
+                new Beer(BeerType.IPA, "piwo4")
         );
     }
 
@@ -89,14 +90,15 @@ class BeerServiceTest {
         verify(repository).save(beer);
     }
 
-    @Test
-    void shouldNotSaveBeerWithNameSameAsType() {
+    @ParameterizedTest
+    @EnumSource(value = BeerType.class, names = {".*A.*"}, mode = EnumSource.Mode.MATCH_ANY)
+    void shouldNotSaveBeerWithNameSameAsType(BeerType type) {
         //given
 
         //expect
         assertThrows(
                 IllegalNameException.class,
-                () -> beerService.create(new Beer(Type.IPA, "ipa"))
+                () -> beerService.create(new Beer(type, type.name()))
         );
 
 //        try {
@@ -112,11 +114,11 @@ class BeerServiceTest {
         //given
 
         //when
-        beerService.create(new Beer(Type.IPA, "BRO"));
+        beerService.create(new Beer(BeerType.IPA, "BRO"));
         //then
         InOrder inOrder= Mockito.inOrder(repository);
         inOrder.verify(repository).findBeerByName("BRO");
-        inOrder.verify(repository).save(new Beer(Type.IPA, "BRO"));
+        inOrder.verify(repository).save(new Beer(BeerType.IPA, "BRO"));
     }
 
 

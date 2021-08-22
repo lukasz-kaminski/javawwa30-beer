@@ -14,10 +14,10 @@ import javax.persistence.Id;
 public class Beer {
     @Id
     private Long id;
-    private Type type;
+    private BeerType type;
     private String name;
 
-    public Beer(Type type, String name) {
+    public Beer(BeerType type, String name) {
         this.type = type;
         this.name = name;
     }

@@ -1,6 +1,6 @@
 package pl.sda.beer.domain;
 
-public enum Type {
+public enum BeerType {
     LAGER,
     WEIZEN,
     WHEAT,

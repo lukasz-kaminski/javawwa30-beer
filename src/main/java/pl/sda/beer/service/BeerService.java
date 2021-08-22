@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.sda.beer.IllegalNameException;
 import pl.sda.beer.domain.Beer;
-import pl.sda.beer.domain.Type;
+import pl.sda.beer.domain.BeerType;
 import pl.sda.beer.repository.BeerRepository;
 
 @Service
@@ -13,7 +13,7 @@ public class BeerService {
 
     private final BeerRepository beerRepository;
 
-    public Beer create(Type type, String name) {
+    public Beer create(BeerType type, String name) {
         return create(new Beer(type, name));
     }
 
