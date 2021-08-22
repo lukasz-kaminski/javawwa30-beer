@@ -1,5 +1,6 @@
 package pl.sda.beer.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,6 +9,7 @@ import javax.persistence.Id;
 
 @Entity
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class Beer {
     @Id
