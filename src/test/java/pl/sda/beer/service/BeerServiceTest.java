@@ -3,6 +3,7 @@ package pl.sda.beer.service;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
@@ -13,6 +14,8 @@ import pl.sda.beer.IllegalNameException;
 import pl.sda.beer.domain.Beer;
 import pl.sda.beer.domain.Type;
 import pl.sda.beer.repository.BeerRepository;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -50,6 +53,27 @@ class BeerServiceTest {
 
         //then
         verify(repository).save(new Beer(Type.IPA, beerName));
+    }
+
+    static Stream<Beer> beerGenerator() {
+        return Stream.of(
+                new Beer(Type.IPA, "piwo1"),
+                new Beer(Type.IPA, "piwo2"),
+                new Beer(Type.IPA, "piwo3"),
+                new Beer(Type.IPA, "piwo4")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("beerGenerator")
+    void shouldCallRepo(Beer beer){
+        //given
+
+        //when
+        beerService.create(beer);
+
+        //then
+        verify(repository).save(beer);
     }
 
     @Test
